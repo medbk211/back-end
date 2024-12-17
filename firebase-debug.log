@@ -1,0 +1,28 @@
+[debug] [2024-12-17T16:22:31.229Z] ----------------------------------------------------------------------
+[debug] [2024-12-17T16:22:31.234Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\lenovo\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init functions
+[debug] [2024-12-17T16:22:31.234Z] CLI Version:   13.29.1
+[debug] [2024-12-17T16:22:31.235Z] Platform:      win32
+[debug] [2024-12-17T16:22:31.235Z] Node Version:  v20.11.0
+[debug] [2024-12-17T16:22:31.235Z] Time:          Tue Dec 17 2024 17:22:31 GMT+0100 (heure normale d’Europe centrale)
+[debug] [2024-12-17T16:22:31.235Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-12-17T16:22:31.247Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-12-17T16:22:31.249Z] > authorizing via signed-in user (mohamedbriki211@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\lenovo\Desktop\Nouveau dossier (2)\E-SHOP - smartphone\server
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
