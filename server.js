@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
+const morgan = require('morgan');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -18,6 +19,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan('dev'));
 
 // Connect to MongoDB
 mongoose
