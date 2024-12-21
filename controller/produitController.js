@@ -14,7 +14,7 @@ exports.addProduct = async (req, res) => {
 
     // Création d'un nouveau produit
     const product = new Product({
-      image: `http://localhost:5000/uploads/${req.file.filename}`, // Ajout du chemin de l'image
+      image: `https://back-end-fehk.onrender.com/uploads/${req.file.filename}`, // Ajout du chemin de l'image
       title,
       brand,
       description,
