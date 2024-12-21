@@ -6,8 +6,6 @@ const router = express.Router();
 router.post('/signup', authController.signup);
 
 // Route pour la connexion
-router.post('/login', (req, res) => {
-    res.json({ message: 'Login endpoint' });
-  });
+router.post('/login', authController.login);
 
 module.exports = router;
