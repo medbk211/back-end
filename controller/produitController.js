@@ -119,6 +119,7 @@ exports.updateProduct = async (req, res) => {
 };
 
 // Supprimer un produit
+// Supprimer un produit
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -126,18 +127,19 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Produit non trouvé.' });
     }
 
-    // Suppression de l'image associée dans le système de fichiers
+    // Supprimer l'image associée sur Cloudinary
     if (product.image) {
-      const imagePath = path.join(__dirname, '..', 'uploads', path.basename(product.image));
       try {
-        await fs.unlink(imagePath);
-        console.log(`Image ${imagePath} supprimée`);
+        // Extraire le Public ID de l'image depuis l'URL sécurisée
+        const publicId = product.image.split('/').pop().split('.')[0]; // Ajustez si nécessaire
+        await cloudinary.uploader.destroy(`products/${publicId}`);
+        console.log(`Image Cloudinary supprimée : products/${publicId}`);
       } catch (err) {
-        console.warn(`Impossible de supprimer l'image ${imagePath}: ${err.message}`);
+        console.warn(`Impossible de supprimer l'image Cloudinary : ${err.message}`);
       }
     }
 
-    // Suppression du produit dans la base de données
+    // Supprimer le produit dans la base de données
     await product.deleteOne();
     res.json({ message: 'Produit supprimé avec succès.' });
   } catch (err) {
