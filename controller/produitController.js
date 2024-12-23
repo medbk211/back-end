@@ -1,18 +1,13 @@
-// Contrôleur pour les produits (CRUD)
 const Product = require('../models/produit'); // Modèle Mongoose pour les produits
-const fs = require('fs/promises'); // Version promesse de fs pour la suppression des fichiers
-const path = require('path');
 const Joi = require('joi'); // Validation des données avec Joi
 const cloudinary = require('../config/cloudinary');
-
-// Définir une URL de base pour les images
-const BASE_IMAGE_URL = 'https://back-end-fehk.onrender.com/uploads/';
 
 // Validation du produit avec Joi
 const productSchema = Joi.object({
   title: Joi.string().required(),
   brand: Joi.string().required(),
   description: Joi.string().required(),
+  category: Joi.string().required(),
   originalPrice: Joi.number().positive().required(),
   discountedPrice: Joi.number().positive().optional(),
   promotion: Joi.boolean().optional(),
@@ -21,20 +16,17 @@ const productSchema = Joi.object({
 // Ajouter un produit
 exports.addProduct = async (req, res) => {
   try {
-    // Validation des données
     const { error } = productSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    // Vérification de la présence de l'image
     if (!req.file) {
       return res.status(400).json({ error: 'Une image est obligatoire.' });
     }
 
-    const { title, brand, description, originalPrice, discountedPrice, promotion } = req.body;
+    const { title, brand, description, category, originalPrice, discountedPrice, promotion } = req.body;
 
-    // Téléchargement de l'image sur Cloudinary
     const uploadResult = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream({ folder: 'products' }, (error, result) => {
         if (error) reject(new Error('Erreur lors du téléchargement de l\'image.'));
@@ -42,12 +34,12 @@ exports.addProduct = async (req, res) => {
       }).end(req.file.buffer);
     });
 
-    // Création du produit avec les données et l'image téléchargée
     const product = new Product({
       image: uploadResult.secure_url,
       title,
       brand,
       description,
+      category,
       originalPrice,
       discountedPrice,
       promotion: promotion || false,
@@ -94,7 +86,6 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Produit non trouvé.' });
     }
 
-    // Mise à jour de l'image sur Cloudinary si une nouvelle image est fournie
     if (req.file) {
       const publicId = product.image.split('/').pop().split('.')[0];
       await cloudinary.uploader.destroy(`products/${publicId}`);
@@ -104,11 +95,9 @@ exports.updateProduct = async (req, res) => {
           else resolve(result);
         }).end(req.file.buffer);
       });
-
       product.image = uploadResult.secure_url;
     }
 
-    // Mise à jour des autres champs
     Object.assign(product, req.body);
     await product.save();
     res.json(product);
@@ -119,7 +108,6 @@ exports.updateProduct = async (req, res) => {
 };
 
 // Supprimer un produit
-// Supprimer un produit
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -127,19 +115,15 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Produit non trouvé.' });
     }
 
-    // Supprimer l'image associée sur Cloudinary
     if (product.image) {
       try {
-        // Extraire le Public ID de l'image depuis l'URL sécurisée
-        const publicId = product.image.split('/').pop().split('.')[0]; // Ajustez si nécessaire
+        const publicId = product.image.split('/').pop().split('.')[0];
         await cloudinary.uploader.destroy(`products/${publicId}`);
-        console.log(`Image Cloudinary supprimée : products/${publicId}`);
       } catch (err) {
         console.warn(`Impossible de supprimer l'image Cloudinary : ${err.message}`);
       }
     }
 
-    // Supprimer le produit dans la base de données
     await product.deleteOne();
     res.json({ message: 'Produit supprimé avec succès.' });
   } catch (err) {
